@@ -16,7 +16,10 @@ def askQuestion():
     data=json.loads(request.data)
     time.sleep(1)
     askedquestion=data["question"]
-    finalResponce={"status": "Success", "message": answer_question(df,question=askedquestion)}
+    try:
+        finalResponce={"status": "Success", "message": answer_question(df,question=askedquestion)}
+    except:
+        finalResponce={'status':"Failed","message":"Something went wrong"}
     return finalResponce
 
 # chatBot.run()

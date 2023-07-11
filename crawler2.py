@@ -58,7 +58,8 @@ def create_context(
 
 def answer_question(
     df,
-    model="text-davinci-003",
+    # model="text-davinci-003",
+    model="gpt-3.5-turbo-0613",
     question="Am I allowed to publish model outputs to Twitter, without a human review?",
     max_len=1800,
     size="ada",
@@ -82,8 +83,18 @@ def answer_question(
 
     try:
         # Create a completions using the questin and context
-        response = openai.Completion.create(
-            prompt=f"Answer the question based on the context below, and if the question can't be answered based on the context, say \"I don't know\"\n\nContext: {context}\n\n---\n\nQuestion: {question}\nAnswer:",
+        # response = openai.Completion.create(
+        #     prompt=f"Answer the question based on the context below, and if the question can't be answered based on the context, say \"I don't know\"\n\nContext: {context}\n\n---\n\nQuestion: {question}\nAnswer:",
+        #     temperature=0,
+        #     max_tokens=max_tokens,
+        #     top_p=1,
+        #     frequency_penalty=0,
+        #     presence_penalty=0,
+        #     stop=stop_sequence,
+        #     model=model,
+        # )
+        response = openai.ChatCompletion.create(
+            messages=[ {'role':'user','content':f"Answer the question based on the context below, and if the question can't be answered based on the context, say \"I don't know\"\n\nContext: {context}\n\n---\n\nQuestion: {question}\nAnswer:" } ] ,
             temperature=0,
             max_tokens=max_tokens,
             top_p=1,
@@ -92,11 +103,13 @@ def answer_question(
             stop=stop_sequence,
             model=model,
         )
-        return response["choices"][0]["text"].strip()
+        return response["choices"][0]["message"]['content'].strip()
     except Exception as e:
         print(e)
         return ""
     
     
-
-# print(answer_question(df, question="What is The Assembly?"))
+# try:
+#     print(answer_question(df, question="What is The Assembly?"))
+# except Exception as e : 
+#     print("Error occurred",e)
